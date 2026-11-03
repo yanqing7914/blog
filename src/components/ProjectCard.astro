@@ -1,0 +1,63 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getPostUrl } from "@/utils/getPostPaths";
+import { toTransitionName } from "@/utils/toTransitionName";
+import Datetime from "./Datetime.astro";
+
+type Props = CollectionEntry<"posts">;
+
+const { id, data, filePath } = Astro.props;
+const { title, description, techStack, repo, demo, ...rest } = data;
+const href = getPostUrl(id, filePath, Astro.currentLocale);
+---
+
+<li class="border-border my-6 rounded-lg border p-5">
+  <a
+    href={href}
+    class="text-accent inline-block text-lg font-medium decoration-dashed underline-offset-4 hover:underline focus-visible:no-underline"
+  >
+    <h3 transition:name={toTransitionName(id)}>{title}</h3>
+  </a>
+  <Datetime {...rest} />
+  <p class="mt-2">{description}</p>
+
+  {
+    techStack && techStack.length > 0 && (
+      <ul class="mt-3 flex flex-wrap gap-2" aria-label="技术栈">
+        {techStack.map(tech => (
+          <li class="bg-muted rounded px-2 py-0.5 text-sm">{tech}</li>
+        ))}
+      </ul>
+    )
+  }
+
+  <div class="mt-3 flex flex-wrap gap-4 text-sm">
+    <a href={href} class="hover:text-accent underline underline-offset-4">
+      阅读复盘 →
+    </a>
+    {
+      repo && (
+        <a
+          href={repo}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-accent underline underline-offset-4"
+        >
+          源码（GitHub）
+        </a>
+      )
+    }
+    {
+      demo && (
+        <a
+          href={demo}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-accent underline underline-offset-4"
+        >
+          在线演示
+        </a>
+      )
+    }
+  </div>
+</li>

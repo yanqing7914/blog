@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Main from "@/components/Main.astro";
+import Footer from "@/components/Footer.astro";
+import Card from "@/components/Card.astro";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { CATEGORIES, filterByCategory } from "@/utils/categories";
+import config from "@/config";
+
+const meta = CATEGORIES.thought;
+const posts = getSortedPosts(
+  filterByCategory(await getCollection("posts"), "thought")
+);
+---
+
+<Layout title={`${meta.title} | ${config.site.title}`} description={meta.desc}>
+  <Header />
+  <Breadcrumb />
+  <Main pageTitle={meta.title} pageDesc={meta.desc}>
+    {
+      posts.length > 0 ? (
+        <ul>
+          {posts.map(post => (
+            <Card {...post} />
+          ))}
+        </ul>
+      ) : (
+        <p>还没有随笔。</p>
+      )
+    }
+  </Main>
+  <Footer />
+</Layout>

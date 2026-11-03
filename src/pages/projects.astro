@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Main from "@/components/Main.astro";
+import Footer from "@/components/Footer.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { CATEGORIES, filterByCategory } from "@/utils/categories";
+import config from "@/config";
+
+const meta = CATEGORIES.project;
+const posts = getSortedPosts(
+  filterByCategory(await getCollection("posts"), "project")
+);
+---
+
+<Layout title={`${meta.title} | ${config.site.title}`} description={meta.desc}>
+  <Header />
+  <Breadcrumb />
+  <Main pageTitle={meta.title} pageDesc={meta.desc}>
+    {
+      posts.length > 0 ? (
+        <ul>
+          {posts.map(post => (
+            <ProjectCard {...post} />
+          ))}
+        </ul>
+      ) : (
+        <p>还没有项目文章。</p>
+      )
+    }
+  </Main>
+  <Footer />
+</Layout>
